@@ -1,0 +1,49 @@
+version: '3.7'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./Dockerfiles/api/Dockerfile
+    image: api_stock_yachay
+    container_name: api_stock_yachay
+    working_dir: /code
+    tty: true
+    volumes:
+      - ./src/api:/code
+    ports:
+      - 8889:8889
+    networks:
+      - yachay_network
+  front:
+    build:
+      context: .
+      dockerfile: ./Dockerfiles/front/Dockerfile
+    image: front_stock_yachay
+    container_name: front_stock_yachay
+    working_dir: /usr/src/app
+    tty: true
+    volumes:
+      - ./src/front/yachay:/usr/src/app
+    ports:
+      - 8890:8890
+    networks:
+      - yachay_network
+  db:
+    image: mariadb:10.5.9-focal
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: stock
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - 8891:3306
+    volumes:
+      - ./data/mariadb:/docker-entrypoint-initdb.d
+    networks:
+      - yachay_network
+
+networks:
+  yachay_network:
+    driver: bridge
