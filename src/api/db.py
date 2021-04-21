@@ -1,4 +1,4 @@
-from peewee import *
+from peewee import Model, CharField, TimestampField, DecimalField, BooleanField, MySQLDatabase
 
 
 db_engine = MySQLDatabase(

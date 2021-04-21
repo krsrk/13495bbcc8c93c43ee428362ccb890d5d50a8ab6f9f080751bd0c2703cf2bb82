@@ -8,7 +8,7 @@ class TickerRepository:
     repository = Ticker
 
     def all(self):
-        return self.repository.select().get()
+        return self.repository.select()
 
     def findBySymbol(self, ticker_symbol: str):
         return self.repository.select().where(self.repository.symbol == ticker_symbol).first()
@@ -29,8 +29,8 @@ class TickerRepository:
 
     def update(self, ticker):
         last_update_timestamp = datetime.now().timestamp()
-        ticker_price = float(ticker.local_price)
-        ticker_price_with_fee = ticker_price * 0.1
+        ticker_price = ticker.local_price
+        ticker_price_with_fee = ticker_price + (ticker_price * 0.1)
 
         ticker.local_last_update = int(last_update_timestamp)
         ticker.local_price = ticker_price_with_fee
