@@ -46,6 +46,20 @@ class Stock:
 
         return buy_stock_result
 
+    def updateTickerFromConsole(self, ticker):
+        self.getTickerFromStockService(ticker.symbol)
+        ticker.local_price = self.ticker.local_price
+        updated_ticker = TickerRepository().update(ticker)
+
+        return TickerResponseModel(
+            symbol=updated_ticker.symbol,
+            company_name=updated_ticker.company_name,
+            primary_exchange=updated_ticker.primary_exchange,
+            local_last_update=str(updated_ticker.local_last_update),
+            local_price=updated_ticker.local_price,
+            local_cached=True,
+        )
+
     def createTicker(self, data):
         new_ticker = TickerRepository().create(data)
         self.ticker = TickerResponseModel(
