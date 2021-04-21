@@ -37,3 +37,18 @@ async def get_quote(ticker_symbol: str):
                              detail=stock.error_iex_data['error_message'])
 
     return stock.ticker
+
+
+@app.post('/stock/buy/ticker/{ticker_symbol}/{price}')
+async def buy_stock(ticker_symbol: str, price: float):
+    buy_stock_request = Stock().processBuyTickerStock(ticker_symbol, price)
+
+    if not buy_stock_request['result']:
+        raise HTTPException(status_code=buy_stock_request['code'], detail=buy_stock_request)
+
+    return buy_stock_request
+
+
+@app.post('/stock/buy/ticker/{ticker_symbol}/{price}/{confirmation}')
+async def buy_stock_confirmation(ticker_symbol: str, price: float, confirmation: bool):
+    return {ticker_symbol, price, confirmation}

@@ -1,3 +1,4 @@
+import json
 from datetime import timedelta, datetime
 from repositories import TickerRepository
 from schemas import TickerResponseModel
@@ -25,6 +26,25 @@ class Stock:
                 )
         elif self.checkIfTickerExistsInIex(ticker_symbol):
             self.createTicker(self.ticker)
+
+    def processBuyTickerStock(self, ticker_symbol: str, price: float):
+        buy_stock_result = {'code': 200, 'result': True, 'message': 'Successful Transaction!!', 'ticker': {}}
+
+        if self.checkIfTickerExists(ticker_symbol):
+            if self.checkIfPriceHasChanged(ticker_symbol, price):
+                self.updateTicker()
+                buy_stock_result['code'] = 422
+                buy_stock_result['result'] = False
+                buy_stock_result[
+                    'message'] = 'Can not complete transaction the ticker price has changed. Need authorization.'
+                buy_stock_result['ticker'] = json.dumps(self.ticker, default=lambda o: o.__dict__, sort_keys=True,
+                                                        indent=4)
+        else:
+            buy_stock_result['code'] = 404
+            buy_stock_result['result'] = False
+            buy_stock_result['message'] = 'Ticker not found!'
+
+        return buy_stock_result
 
     def createTicker(self, data):
         new_ticker = TickerRepository().create(data)
@@ -102,3 +122,12 @@ class Stock:
             ticker_can_update = True
 
         return ticker_can_update
+
+    def checkIfPriceHasChanged(self, ticker_symbol: str, price: float):
+        price_has_changed = False
+        self.getTickerFromStockService(ticker_symbol, False)
+
+        if price != self.ticker.local_price:
+            price_has_changed = True
+
+        return price_has_changed
