@@ -1,0 +1,30 @@
+<template>
+  <div class="m-4 flex">
+    	<input
+        v-model="inputTicker"
+        class="rounded-l-lg p-4 border-t mr-0 border-b border-l text-gray-800 border-gray-200 bg-white"
+        placeholder="Find & Quote The Ticker ..."/>
+		<button
+      @click="quoteClickHandler"
+      class="px-8 rounded-r-lg bg-blue-400  text-gray-800 font-bold p-4 uppercase border-white border-t border-b border-r">
+      Quote
+    </button>
+	</div>
+</template>
+
+<script>
+export default {
+  name: "TheSearchBox",
+  data () {
+    return {
+      inputTicker: ''
+    }
+  },
+  methods: {
+    quoteClickHandler() {
+      this.$store.dispatch('stock/makeQuote', this.inputTicker)
+      this.inputTicker = ''
+    }
+  }
+}
+</script>
