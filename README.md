@@ -60,7 +60,7 @@ Esta información tambien se encuentra en el archivo **docker-compose.yml** en e
 La base de datos tiene le motor de Maria DB, asi que tambien se tiene que tener
 instalado el driver de este motor de base de datos, por lo general los IDES o visores de base de datos lo instalan a la hora de configurarlo.
 
-###Frontend
+### Frontend
 
 Para levantar el servidor web del frontend se debe ejecutar el siguiente comando:
 
