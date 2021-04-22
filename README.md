@@ -1,15 +1,15 @@
 # Yachay Test
 
 
-##Deploy
+## Deploy
 
-###General
+### General
 
 El ambiente de desarrollo se hizo en "Docker", por lo que se tiene que tener "Docker" instalado en la PC
 o workstation, asi como tambien "Docker Compose". Se incluyeron tres servicios; uno que representa el backend que es
 la imagen de Python, la imagen de Node que representa el frontend y la imagen de MariDb que es la base de datos.
 
-###Instalación
+### Instalación
 
 Una vez instalado Docker, se deben seguir los siguientes pasos para levantar el entorno:
 
@@ -38,7 +38,7 @@ $ docker-compose up -d
 ``` 
 
 
-###Backend
+### Backend
 
 Para levantar el servidor de la API o Backend debemos de ejecutar el siguiente comando:
 
@@ -48,7 +48,7 @@ $ docker-compose exec api uvicorn main:app --reload --port 8889 --host 0.0.0.0
 
 La opción **--reload** es para reiniciar el servidor cuando detecte cambios en los scripts de Python, en production no se usa esta opción.
 
-####Base de datos
+#### Base de datos
 Para acceder al servidor de base de datos se debe configurar en algun IDE o visor de base de datos la siguiente información:
 * HOST: localhost
 * PORT: 8891
