@@ -1,9 +1,19 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from db import db_engine as conn
 from db import Ticker
 from stocks_exchange import Stock
+from schemas import TickerRequestModel
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Server Events
@@ -27,14 +37,14 @@ async def read_root():
     return {"Hello": "World"}
 
 
-@app.post('/quote')
+@app.get('/quote/ticker/{ticker_symbol}')
 async def get_quote(ticker_symbol: str):
     stock = Stock()
     stock.processQuote(ticker_symbol)
 
     if stock.has_iex_response_error:
         raise HTTPException(status_code=stock.error_iex_data['error_code'],
-                             detail=stock.error_iex_data['error_message'])
+                            detail=stock.error_iex_data['error_message'])
 
     return stock.ticker
 
