@@ -43,7 +43,7 @@
           </td>
 
           <td class="px-16 py-2">
-            <span>{{ ticker.local_last_update }}</span>
+            <span>{{ ticker.validation_time }}</span>
           </td>
           <td class="px-16 py-2">
             <button
@@ -56,7 +56,7 @@
       </table>
     </template>
     <template v-else>
-      <h4>There is no quote for the moment.</h4>
+      <h4>{{ errorMessage }}</h4>
     </template>
   </div>
 </template>
@@ -71,6 +71,14 @@ export default {
       },
       set(value) {
         this.$store.commit('stock/ticker', value)
+      }
+    },
+    errorMessage: {
+      get() {
+        return this.$store.state.stock.errorMessage
+      },
+      set(value) {
+        this.$store.commit('stock/errorMessage', value)
       }
     },
     checkIfTickerIsEmpty() {

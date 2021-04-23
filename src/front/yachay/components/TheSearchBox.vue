@@ -22,8 +22,18 @@ export default {
   },
   methods: {
     quoteClickHandler() {
-      this.$store.dispatch('stock/makeQuote', this.inputTicker)
-      this.inputTicker = ''
+      if (this.validateTickerSymbol()) {
+        this.$store.dispatch('stock/makeQuote', this.inputTicker)
+        this.inputTicker = ''
+      } else {
+        this.$store.commit('stock/errorMessage', 'Only numbers and letters with uppercase and no spaces')
+      }
+    },
+    validateTickerSymbol() {
+      let input = this.inputTicker
+      let regExp =  /^[A-Z0-9]+$/i
+
+      return regExp.test(input)
     }
   }
 }
