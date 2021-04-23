@@ -6,6 +6,8 @@ from services.api import ApiService, IexApiService
 
 
 class Stock:
+    TIME_IN_SEC_TO_QUERY_IEX = 15
+
     ticker = {}
     has_iex_response_error = False
     error_iex_data = {}
@@ -16,13 +18,14 @@ class Stock:
                 self.getTickerFromStockService(ticker_symbol, False)
                 self.updateTicker()
             else:
+                TickerRepository().updateByField(self.ticker, 'local_cached', True)
                 self.ticker = TickerResponseModel(
                     symbol=self.ticker.symbol,
                     company_name=self.ticker.company_name,
                     primary_exchange=self.ticker.primary_exchange,
                     local_last_update=str(self.ticker.local_last_update),
                     local_price=self.ticker.local_price,
-                    local_cached=True,
+                    local_cached=self.ticker.local_cached,
                 )
         elif self.checkIfTickerExistsInIex(ticker_symbol):
             self.createTicker(self.ticker)
@@ -57,7 +60,7 @@ class Stock:
             primary_exchange=updated_ticker.primary_exchange,
             local_last_update=str(updated_ticker.local_last_update),
             local_price=updated_ticker.local_price,
-            local_cached=True,
+            local_cached=updated_ticker.local_cached,
         )
 
     def createTicker(self, data):
@@ -68,7 +71,7 @@ class Stock:
             primary_exchange=new_ticker.primary_exchange,
             local_last_update=str(new_ticker.local_last_update),
             local_price=new_ticker.local_price,
-            local_cached=True,
+            local_cached=new_ticker.local_cached,
         )
 
     def updateTicker(self):
@@ -79,7 +82,7 @@ class Stock:
             primary_exchange=updated_ticker.primary_exchange,
             local_last_update=str(updated_ticker.local_last_update),
             local_price=updated_ticker.local_price,
-            local_cached=True,
+            local_cached=updated_ticker.local_cached,
         )
 
     def getTickerFromStockService(self, ticker_symbol: str, set_ticker_from_service=True):
@@ -94,10 +97,11 @@ class Stock:
                     primary_exchange=api_service.request_data['primaryExchange'],
                     local_last_update=api_service.request_data['latestUpdate'],
                     local_price=api_service.request_data['latestPrice'],
-                    local_cached=True,
+                    local_cached=False,
                 )
             else:
                 self.ticker.local_price = api_service.request_data['latestPrice']
+                self.ticker.local_cached = False
         else:
             self.has_iex_response_error = api_service.has_request_error
             self.error_iex_data = api_service.error_request_data
@@ -129,7 +133,7 @@ class Stock:
         request_timestamp = datetime.timestamp(request_time)
 
         local_last_update_timestamp = datetime.timestamp(self.ticker.local_last_update)
-        ticker_last_update = datetime.fromtimestamp(local_last_update_timestamp) + timedelta(seconds=15)
+        ticker_last_update = datetime.fromtimestamp(local_last_update_timestamp) + timedelta(seconds=self.TIME_IN_SEC_TO_QUERY_IEX)
         ticker_last_update_timestamp = datetime.timestamp(ticker_last_update)
 
         if request_timestamp > ticker_last_update_timestamp:

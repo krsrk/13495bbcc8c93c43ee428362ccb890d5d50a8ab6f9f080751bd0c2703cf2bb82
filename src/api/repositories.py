@@ -24,7 +24,7 @@ class TickerRepository:
             primary_exchange=ticker_data.primary_exchange,
             local_last_update=int(last_update_timestamp),
             local_price=ticker_price_with_fee,
-            local_cached=ticker_data.local_cached,
+            local_cached=False,
         )
 
     def update(self, ticker):
