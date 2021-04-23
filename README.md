@@ -70,6 +70,13 @@ $ docker-compose exec api python console.py
 
 ### Frontend
 
+Antes de ejecutar el servidor web del frontend se debe instalar las librerias con el siguiente comando:
+
+```bash
+$ docker-compose exec front npm install
+``` 
+Nota: El comando "npm install" solamente se debe ejecutar una sola vez.
+
 Para levantar el servidor web del frontend se debe ejecutar el siguiente comando:
 
 ```bash
